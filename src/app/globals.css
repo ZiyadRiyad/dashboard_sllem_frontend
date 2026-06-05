@@ -1,0 +1,96 @@
+@import "tailwindcss";
+
+/* Theme Variables */
+:root {
+  /* Default is Dark Theme to keep the beautiful space aesthetic */
+  --slate-950: #020617;
+  --slate-900: #0f172a;
+  --slate-800: #1e293b;
+  --slate-700: #334155;
+  --slate-600: #475569;
+  --slate-500: #64748b;
+  --slate-400: #94a3b8;
+  --slate-300: #cbd5e1;
+  --slate-200: #e2e8f0;
+  --slate-100: #f8fafc;
+  
+  --background: #020617;
+  --foreground: #f8fafc;
+}
+
+/* Light Theme overrides */
+html.light {
+  --slate-950: #f8fafc; /* light background */
+  --slate-900: #ffffff; /* sidebar background / card bg */
+  --slate-800: #f1f5f9; /* sub-cards background */
+  --slate-700: #cbd5e1; /* borders / inputs */
+  --slate-600: #94a3b8; /* secondary borders */
+  --slate-500: #64748b; /* muted labels */
+  --slate-400: #475569; /* secondary text */
+  --slate-300: #334155; /* body text secondary */
+  --slate-200: #1e293b; /* heading text secondary */
+  --slate-100: #0f172a; /* text primary */
+  
+  --background: #f8fafc;
+  --foreground: #0f172a;
+}
+
+/* Dark Theme explicit class overrides */
+html.dark {
+  --slate-950: #020617;
+  --slate-900: #0f172a;
+  --slate-800: #1e293b;
+  --slate-700: #334155;
+  --slate-600: #475569;
+  --slate-500: #64748b;
+  --slate-400: #94a3b8;
+  --slate-300: #cbd5e1;
+  --slate-200: #e2e8f0;
+  --slate-100: #f8fafc;
+  
+  --background: #020617;
+  --foreground: #f8fafc;
+}
+
+@theme inline {
+  --color-slate-950: var(--slate-950);
+  --color-slate-900: var(--slate-900);
+  --color-slate-800: var(--slate-800);
+  --color-slate-700: var(--slate-700);
+  --color-slate-600: var(--slate-600);
+  --color-slate-500: var(--slate-500);
+  --color-slate-400: var(--slate-400);
+  --color-slate-300: var(--slate-300);
+  --color-slate-200: var(--slate-200);
+  --color-slate-100: var(--slate-100);
+  
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  /* Override emerald with blue colors to change the theme system-wide from green to blue */
+  --color-emerald-50: var(--color-blue-50);
+  --color-emerald-100: var(--color-blue-100);
+  --color-emerald-200: var(--color-blue-200);
+  --color-emerald-300: var(--color-blue-300);
+  --color-emerald-400: var(--color-blue-400);
+  --color-emerald-500: var(--color-blue-500);
+  --color-emerald-600: var(--color-blue-600);
+  --color-emerald-700: var(--color-blue-700);
+  --color-emerald-800: var(--color-blue-800);
+  --color-emerald-900: var(--color-blue-900);
+  --color-emerald-950: var(--color-blue-950);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Smooth transitions for all theme-affected components */
+div, aside, header, main, button, input, select, table, tr, th, td {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, text-decoration-color 0.3s ease;
+}
