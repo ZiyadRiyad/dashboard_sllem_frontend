@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logos Parts Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            margin: 20px;
+            text-align: center;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+        }
+        .image-card {
+            background-color: #2a2a2a;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            max-width: 600px;
+            width: 100%;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            background-color: #333333; /* transparent grid support */
+            padding: 10px;
+        }
+        h2 {
+            margin-top: 0;
+            color: #0ea5e9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Logos Parts Viewer</h1>
+    <div class="container">
+        <div class="image-card">
+            <h2>Logo Part (logo_part.png)</h2>
+            <img src="./logo_part.png" alt="Logo Part">
+        </div>
+        <div class="image-card">
+            <h2>Text Part (text_part.png)</h2>
+            <img src="./text_part.png" alt="Text Part">
+        </div>
+        <div class="image-card">
+            <h2>Padded Square (app_icon_square.png)</h2>
+            <img src="./app_icon_square.png" alt="Padded Square Icon">
+        </div>
+    </div>
+</body>
+</html>

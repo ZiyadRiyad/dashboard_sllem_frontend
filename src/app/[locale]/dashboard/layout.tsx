@@ -95,6 +95,21 @@ export default function DashboardLayout({
       localStorage.clear();
       router.push('/');
     }
+
+    const handleUserUpdate = () => {
+      const updatedUserStr = localStorage.getItem('sllem_admin_user');
+      if (updatedUserStr) {
+        try {
+          const user = JSON.parse(updatedUserStr);
+          setAdminName(user.fullName || 'Admin');
+        } catch (e) {}
+      }
+    };
+
+    window.addEventListener('sllem-admin-user-updated', handleUserUpdate);
+    return () => {
+      window.removeEventListener('sllem-admin-user-updated', handleUserUpdate);
+    };
   }, [router]);
 
   const handleLogout = () => {

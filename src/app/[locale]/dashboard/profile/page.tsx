@@ -228,6 +228,7 @@ export default function AdminProfile() {
         localUser.fullName = fullName;
         localUser.phoneNumber = phoneNumber;
         localStorage.setItem('sllem_admin_user', JSON.stringify(localUser));
+        window.dispatchEvent(new Event('sllem-admin-user-updated'));
       }
 
       setSuccessMsg('تم حفظ وتعديل بيانات ملفك الشخصي بنجاح');

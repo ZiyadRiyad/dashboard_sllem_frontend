@@ -34,6 +34,76 @@ interface City {
   name_en: string;
 }
 
+const isValidYemeniName = (name: string): boolean => {
+  const trimmed = name.trim().replace(/\s+/g, ' ');
+  if (!trimmed) return false;
+
+  const words = trimmed.split(' ');
+  const parts: string[] = [];
+
+  for (let i = 0; i < words.length; i++) {
+    const current = words[i];
+    const currentLower = current.toLowerCase();
+    const isPrefix = 
+      current === 'بن' ||
+      current === 'ابن' ||
+      current === 'ولد' ||
+      current === 'آل' ||
+      current === 'أبو' ||
+      current === 'ابو' ||
+      current === 'عبد' ||
+      current === 'أم' ||
+      current === 'ام' ||
+      currentLower === 'bin' ||
+      currentLower === 'ibn' ||
+      currentLower === 'al' ||
+      currentLower === 'abu' ||
+      currentLower === 'abdu' ||
+      currentLower === 'abd' ||
+      currentLower === 'abdel' ||
+      currentLower === 'walad' ||
+      currentLower === 'om' ||
+      currentLower === 'um';
+
+    if (isPrefix && i < words.length - 1) {
+      parts.push(`${current} ${words[i + 1]}`);
+      i++;
+    } else {
+      parts.push(current);
+    }
+  }
+  return parts.length >= 4;
+};
+
+const isValidYemeniPhone = (phone: string): boolean => {
+  const clean = phone.replace(/[\s\-()]+/g, '');
+  const match = clean.match(/^(\+967|967)?(77|78|73|71|70)\d{7}$/);
+  if (!match) return false;
+
+  let localNumber = clean;
+  if (clean.startsWith('+967')) {
+    localNumber = clean.substring(4);
+  } else if (clean.startsWith('967')) {
+    localNumber = clean.substring(3);
+  }
+
+  if (localNumber.length !== 9) return false;
+
+  if (/^(.)\1+$/.test(localNumber)) return false;
+  if (['712345678', '789012345', '777777777', '711111111', '700000000'].includes(localNumber)) return false;
+
+  return true;
+};
+
+const isValidPassword = (password: string): boolean => {
+  if (password.length < 8) return false;
+  const hasUppercase = /[A-Z]/.test(password);
+  const hasLowercase = /[a-z]/.test(password);
+  const hasNumber = /[0-9]/.test(password);
+  const hasSpecial = /[^A-Za-z0-9]/.test(password);
+  return hasUppercase && hasLowercase && hasNumber && hasSpecial;
+};
+
 export default function AdminsManagement() {
   const t = useTranslations();
   const [admins, setAdmins] = useState<Admin[]>([]);
@@ -49,6 +119,7 @@ export default function AdminsManagement() {
   const [password, setPassword] = useState('');
   const [cityId, setCityId] = useState('');
   const [status, setStatus] = useState('active');
+  const [formError, setFormError] = useState<string | null>(null);
 
   const [isFetchingAdmins, setIsFetchingAdmins] = useState(false);
   const [isFetchingCities, setIsFetchingCities] = useState(false);
@@ -93,6 +164,7 @@ export default function AdminsManagement() {
     setFullName('');
     setPhoneNumber('');
     setPassword('');
+    setFormError(null);
     if (citiesList.length > 0) {
       setCityId(citiesList[0].id.toString());
     } else {
@@ -106,6 +178,7 @@ export default function AdminsManagement() {
     setFullName(admin.full_name);
     setPhoneNumber(admin.phone_number);
     setPassword('');
+    setFormError(null);
     setCityId(admin.city_id?.toString() || (citiesList.length > 0 ? citiesList[0].id.toString() : ''));
     setStatus(admin.status);
     setShowEditModal(true);
@@ -113,8 +186,21 @@ export default function AdminsManagement() {
 
   const handleAddAdmin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setFormError(null);
     if (!fullName || !phoneNumber || !password) {
-      alert('Please fill out all fields.');
+      setFormError('يرجى ملء جميع الحقول المطلوبة.');
+      return;
+    }
+    if (!isValidYemeniName(fullName)) {
+      setFormError('الرجاء إدخال الاسم الرباعي كاملاً أو الاسم الثلاثي مع اللقب/القبيلة (مثال: بن عسل، بن جوبح).');
+      return;
+    }
+    if (!isValidYemeniPhone(phoneNumber)) {
+      setFormError('رقم الجوال غير صحيح. يجب أن يتكون من 9 أرقام ويبدأ بـ (77، 78، 73، 71، 70)');
+      return;
+    }
+    if (!isValidPassword(password)) {
+      setFormError('كلمة المرور ضعيفة جداً. يجب أن تتكون من 8 خانات على الأعل، وتحتوي على حرف كبير، حرف صغير، رقم، ورمز خاص');
       return;
     }
     try {
@@ -128,15 +214,28 @@ export default function AdminsManagement() {
       fetchAdmins();
     } catch (error: any) {
       console.error('Failed to create admin:', error);
-      alert(error.response?.data?.error || 'Failed to create admin.');
+      setFormError(error.response?.data?.error || 'Failed to create admin.');
     }
   };
 
   const handleUpdateAdmin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedAdmin) return;
+    setFormError(null);
     if (!fullName || !phoneNumber) {
-      alert('Please fill out all fields.');
+      setFormError('يرجى ملء جميع الحقول المطلوبة.');
+      return;
+    }
+    if (!isValidYemeniName(fullName)) {
+      setFormError('الرجاء إدخال الاسم الرباعي كاملاً أو الاسم الثلاثي مع اللقب/القبيلة (مثال: بن عسل، بن جوبح).');
+      return;
+    }
+    if (!isValidYemeniPhone(phoneNumber)) {
+      setFormError('رقم الجوال غير صحيح. يجب أن يتكون من 9 أرقام ويبدأ بـ (77، 78، 73، 71، 70)');
+      return;
+    }
+    if (password && !isValidPassword(password)) {
+      setFormError('كلمة المرور ضعيفة جداً. يجب أن تتكون من 8 خانات على الأقل، وتحتوي على حرف كبير، حرف صغير، رقم، ورمز خاص');
       return;
     }
     try {
@@ -151,7 +250,7 @@ export default function AdminsManagement() {
       fetchAdmins();
     } catch (error: any) {
       console.error('Failed to update admin:', error);
-      alert(error.response?.data?.error || 'Failed to update admin.');
+      setFormError(error.response?.data?.error || 'Failed to update admin.');
     }
   };
 
@@ -310,6 +409,12 @@ export default function AdminsManagement() {
               </button>
             </div>
             <form onSubmit={handleAddAdmin} className="space-y-4 text-xs">
+              {formError && (
+                <div className="p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-400 font-semibold flex items-center gap-2">
+                  <AlertCircle className="h-4 w-4 shrink-0" />
+                  <span>{formError}</span>
+                </div>
+              )}
               <div className="space-y-1">
                 <label className="text-slate-400 font-bold block">الاسم الكامل / Full Name</label>
                 <input
@@ -388,6 +493,12 @@ export default function AdminsManagement() {
               </button>
             </div>
             <form onSubmit={handleUpdateAdmin} className="space-y-4 text-xs">
+              {formError && (
+                <div className="p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-400 font-semibold flex items-center gap-2">
+                  <AlertCircle className="h-4 w-4 shrink-0" />
+                  <span>{formError}</span>
+                </div>
+              )}
               <div className="space-y-1">
                 <label className="text-slate-400 font-bold block">الاسم الكامل / Full Name</label>
                 <input

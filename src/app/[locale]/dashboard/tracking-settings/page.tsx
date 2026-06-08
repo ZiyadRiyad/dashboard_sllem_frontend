@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import axios from 'axios';
 import { useLocale } from 'next-intl';
+import api from '@/lib/api';
 import { 
   Play, 
   Pause, 
@@ -92,17 +92,10 @@ export default function TrackingSettingsPage() {
     };
     document.head.appendChild(script);
   }, []);
-
-  // API Call Helpers
-  const getAuthHeaders = () => {
-    const token = localStorage.getItem('sllem_admin_token');
-    return { headers: { Authorization: `Bearer ${token}` } };
-  };
-
   const fetchSettings = async () => {
     try {
       setLoadingSettings(true);
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/settings/gps`, getAuthHeaders());
+      const res = await api.get('/admin/settings/gps');
       setGpsEnabled(res.data.gpsTrackingEnabled);
       setUpdateInterval(res.data.gpsUpdateInterval);
       setSimulationEnabled(res.data.gpsSimulationEnabled);
@@ -116,7 +109,7 @@ export default function TrackingSettingsPage() {
   const fetchDrivers = async () => {
     try {
       setLoadingDrivers(true);
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/gps/drivers`, getAuthHeaders());
+      const res = await api.get('/admin/gps/drivers');
       setDrivers(res.data);
       if (res.data.length > 0 && !selectedDriverId) {
         setSelectedDriverId(res.data[0].id);
@@ -131,7 +124,7 @@ export default function TrackingSettingsPage() {
   const fetchLogs = async () => {
     try {
       setLoadingLogs(true);
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/gps/logs`, getAuthHeaders());
+      const res = await api.get('/admin/gps/logs');
       setLogs(res.data);
     } catch (e) {
       console.error(e);
@@ -250,14 +243,13 @@ export default function TrackingSettingsPage() {
   const handleSaveSettings = async (enabled: boolean, interval: number, sim: boolean) => {
     try {
       setLoadingSettings(true);
-      await axios.put(
-        `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/settings/gps`,
+      await api.put(
+        '/admin/settings/gps',
         { 
           gpsTrackingEnabled: enabled, 
           gpsUpdateInterval: interval, 
           gpsSimulationEnabled: sim 
-        },
-        getAuthHeaders()
+        }
       );
       setGpsEnabled(enabled);
       setUpdateInterval(interval);
@@ -275,14 +267,13 @@ export default function TrackingSettingsPage() {
     if (!simLat || !simLng) return;
     try {
       setActionLoading(true);
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/admin/gps/simulate`,
+      const res = await api.post(
+        '/admin/gps/simulate',
         {
           driverId: targetId,
           latitude: parseFloat(simLat),
           longitude: parseFloat(simLng)
-        },
-        getAuthHeaders()
+        }
       );
       triggerAlert(res.data.message);
       fetchDrivers();

@@ -50,6 +50,16 @@ interface Driver {
 
 export default function DriversManagement() {
   const t = useTranslations();
+
+  const getImageUrl = (path?: string | null) => {
+    if (!path) return '';
+    if (path.startsWith('http')) return path;
+    const baseUrl = api.defaults.baseURL || 'http://localhost:5000/api';
+    const host = baseUrl.replace(/\/api$/, '');
+    const cleanPath = path.startsWith('/') ? path : `/${path}`;
+    return `${host}${cleanPath}`;
+  };
+
   const [drivers, setDrivers] = useState<Driver[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'ALL' | 'PENDING_APPROVAL' | 'APPROVED' | 'REJECTED' | 'SUSPENDED'>('ALL');
@@ -492,12 +502,12 @@ export default function DriversManagement() {
                       {selectedDriver.vehicle_photo ? (
                         <div className="relative group rounded-xl overflow-hidden border border-slate-800 bg-slate-950 aspect-[4/3] flex items-center justify-center">
                           <img 
-                            src={`http://localhost:5000${selectedDriver.vehicle_photo}`} 
+                            src={getImageUrl(selectedDriver.vehicle_photo)} 
                             alt="صورة المركبة" 
                             className="w-full h-full object-cover transition-transform group-hover:scale-105"
                           />
                           <a 
-                            href={`http://localhost:5000${selectedDriver.vehicle_photo}`} 
+                            href={getImageUrl(selectedDriver.vehicle_photo)} 
                             target="_blank" 
                             rel="noreferrer"
                             className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-xxs font-bold text-slate-100"
@@ -518,12 +528,12 @@ export default function DriversManagement() {
                       {selectedDriver.license_photo ? (
                         <div className="relative group rounded-xl overflow-hidden border border-slate-800 bg-slate-950 aspect-[4/3] flex items-center justify-center">
                           <img 
-                            src={`http://localhost:5000${selectedDriver.license_photo}`} 
+                            src={getImageUrl(selectedDriver.license_photo)} 
                             alt="صورة الرخصة" 
                             className="w-full h-full object-cover transition-transform group-hover:scale-105"
                           />
                           <a 
-                            href={`http://localhost:5000${selectedDriver.license_photo}`} 
+                            href={getImageUrl(selectedDriver.license_photo)} 
                             target="_blank" 
                             rel="noreferrer"
                             className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-xxs font-bold text-slate-100"
