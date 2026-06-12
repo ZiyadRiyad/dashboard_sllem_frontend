@@ -10,7 +10,8 @@ const nextConfig: NextConfig = {
   },
   typescript: {
     ignoreBuildErrors: true, // Also ignore type checking errors during build if needed
-  }
+  },
+  output: "standalone"
 };
 
 export default withNextIntl(nextConfig);
