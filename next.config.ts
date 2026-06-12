@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  output: "standalone" // <--- تأكد من إضافة هذا السطر
+  output: "standalone" // تفعيل خيار البناء المستقل لـ Docker
 };
 
 export default withNextIntl(nextConfig);
