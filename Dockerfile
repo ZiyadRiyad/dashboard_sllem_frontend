@@ -29,6 +29,6 @@ USER node
 EXPOSE 3000
 # Healthcheck for Coolify
 HEALTHCHECK --interval=30s --timeout=10s --start-period=15s --retries=3 \
-  CMD curl -f http://localhost:3000/ || exit 1
+  CMD curl -f http://127.0.0.1:${PORT:-3000}/ || exit 1
 # Start Next.js standalone server
 CMD ["node", "server.js"]
