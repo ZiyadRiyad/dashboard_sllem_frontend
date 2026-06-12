@@ -9,9 +9,9 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   typescript: {
-    ignoreBuildErrors: true, // Also ignore type checking errors during build if needed
+    ignoreBuildErrors: true,
   },
-  output: "standalone"
+  output: "standalone" // <--- تأكد من إضافة هذا السطر
 };
 
 export default withNextIntl(nextConfig);
