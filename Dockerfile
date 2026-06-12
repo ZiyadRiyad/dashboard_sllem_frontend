@@ -5,8 +5,8 @@ WORKDIR /app
 ARG NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 COPY package*.json ./
-# Run with NODE_ENV=development to ensure devDependencies (like typescript) are installed for building
-RUN NODE_ENV=development npm ci
+# استخدام npm install بدلاً من npm ci للتغلب على مشاكل عدم تطابق ملف package-lock.json
+RUN NODE_ENV=development npm install
 COPY . .
 RUN npm run build
 # Stage 2: Production stage
